@@ -15,21 +15,29 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
 
-public class MapsActivity extends FragmentActivity implements LocationListener {
+
+public class MapsActivity extends FragmentActivity implements LocationListener, OnMarkerDragListener {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private double userLat = 0;
     private double userLng = 0;
     private LocationManager locationManager;
     private String provider;
+    private Location utepLocation = new Location("A");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        setUpMapIfNeeded(userLat, userLng);
+
+        // UTEP location
+        utepLocation.setLatitude(31.7700);
+        utepLocation.setLongitude(-106.5050);
+
         // Get the location manager
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         boolean enabled = locationManager
@@ -56,6 +64,7 @@ public class MapsActivity extends FragmentActivity implements LocationListener {
         } else {
             Log.v("LOCATION", "Error");
         }
+        setUpMapIfNeeded(this.userLat, this.userLng);
     }
 
     /* Request updates at startup */
@@ -77,9 +86,13 @@ public class MapsActivity extends FragmentActivity implements LocationListener {
     public void onLocationChanged(Location location) {
         this.userLat = location.getLatitude();
         this.userLng = location.getLongitude();
-        mMap.clear();
-        setUpMap(this.userLat, this.userLng);
-
+        //Log.v("LOCATION", "Lat: " + this.userLat + "Lng: " + this.userLng);
+        double distance = utepLocation.distanceTo(location);
+        Log.v("DISTANCE", "Dist: " + distance);
+        if (distance < 1000) {
+            Toast.makeText(this, "Arrived!",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -104,7 +117,7 @@ public class MapsActivity extends FragmentActivity implements LocationListener {
     /**
      * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
      * installed) and the map has not already been instantiated.. This will ensure that we only ever
-     * call {@link #setUpMap(double, double)} once when {@link #mMap} is not null.
+     * call {@link #setUpMap()} once when {@link #mMap} is not null.
      * <p/>
      * If it isn't installed {@link SupportMapFragment} (and
      * {@link com.google.android.gms.maps.MapView MapView}) will show a prompt for the user to
@@ -124,7 +137,7 @@ public class MapsActivity extends FragmentActivity implements LocationListener {
                     .getMap();
             // Check if we were successful in obtaining the map.
             if (mMap != null) {
-                setUpMap(lat, lng);
+                setUpMap();
             }
         }
     }
@@ -135,8 +148,28 @@ public class MapsActivity extends FragmentActivity implements LocationListener {
      * <p/>
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
-    private void setUpMap(double lat, double lng) {
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), 12.0f));
-        mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)).title("Marker"));
+    private void setUpMap() {
+        mMap.setMyLocationEnabled(true);
+        mMap.setOnMarkerDragListener(this);
+        mMap.addMarker(new MarkerOptions().position(new LatLng(utepLocation.getLatitude(),
+                utepLocation.getLongitude())).title("Marker").draggable(true));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(this.userLat, this.userLng), 12.0f));
+    }
+
+    @Override
+    public void onMarkerDragStart(Marker marker) {
+
+    }
+
+    @Override
+    public void onMarkerDrag(Marker marker) {
+
+    }
+
+    @Override
+    public void onMarkerDragEnd(Marker marker) {
+        this.utepLocation.setLatitude(marker.getPosition().latitude);
+        this.utepLocation.setLongitude(marker.getPosition().longitude);
+        onLocationChanged(mMap.getMyLocation());
     }
 }
