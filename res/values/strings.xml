@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Where To Do</string>
-    <string name="title_activity_maps">Map</string>
+    <string name="action_listview">List</string>
+    <string name="action_map">Map</string>
+    <string name="action_add_task">Add</string>
+    <string name="action_settings">Settings</string>
 </resources>

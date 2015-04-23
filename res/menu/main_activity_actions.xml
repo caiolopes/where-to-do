@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/action_add_task"
+        android:title="@string/action_add_task"
+        android:showAsAction="ifRoom"/>
+
+
+    <item android:id="@+id/action_listview"
+        android:title="@string/action_listview"
+        android:showAsAction="ifRoom"/>
+
+    <item android:id="@+id/action_map"
+        android:title="@string/action_map"
+        android:showAsAction="ifRoom"/>
+
+    <!-- Settings, should always be in the overflow -->
+    <item android:id="@+id/action_settings"
+        android:title="@string/action_settings"
+        android:showAsAction="never" />
+</menu>

@@ -9,19 +9,23 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
 
 
 public class MapsActivity extends FragmentActivity implements LocationListener, OnMarkerDragListener {
 
+    final String TAG = this.getClass().getSimpleName();
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private double userLat = 0;
     private double userLng = 0;
@@ -62,7 +66,7 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
             System.out.println("Provider " + provider + " has been selected.");
             onLocationChanged(location);
         } else {
-            Log.v("LOCATION", "Error");
+            Log.e(TAG, "Error");
         }
         setUpMapIfNeeded(this.userLat, this.userLng);
     }
@@ -86,12 +90,37 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
     public void onLocationChanged(Location location) {
         this.userLat = location.getLatitude();
         this.userLng = location.getLongitude();
-        //Log.v("LOCATION", "Lat: " + this.userLat + "Lng: " + this.userLng);
         double distance = utepLocation.distanceTo(location);
-        Log.v("DISTANCE", "Dist: " + distance);
         if (distance < 1000) {
             Toast.makeText(this, "Arrived!",
                     Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_activity_actions, menu);
+        if (TAG.equals("MapsActivity")) {
+            MenuItem item = menu.findItem(R.id.action_map);
+            item.setVisible(false);
+        }
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                return true;
+            case R.id.action_listview:
+                Intent i = new Intent(this, ListActivity.class);
+                startActivity(i);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
