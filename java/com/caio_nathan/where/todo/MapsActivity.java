@@ -119,6 +119,10 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
                 Intent i = new Intent(this, ListActivity.class);
                 startActivity(i);
                 return true;
+            case R.id.action_add_task:
+                AddFragment addFragment = new AddFragment();
+                addFragment.show(getSupportFragmentManager(), "Add task");
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
