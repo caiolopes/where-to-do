@@ -41,7 +41,7 @@ public class ListActivity extends FragmentActivity {
         // first parameter, the type of list view as a second parameter and your
         // array as a third parameter.
 
-        Iterator i = taskArray.iterator();
+        Iterator i = this.taskArray.iterator();
         ArrayList<String> array = new ArrayList<>();
         while(i.hasNext()) {
             Task t = (Task) i.next();

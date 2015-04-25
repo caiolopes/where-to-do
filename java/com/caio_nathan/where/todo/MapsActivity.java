@@ -24,6 +24,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 
 public class MapsActivity extends FragmentActivity implements LocationListener, OnMarkerDragListener {
@@ -49,11 +50,9 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
             this.taskArray = extras.getParcelableArrayList("TASK_ARRAY");
         } else {
             this.taskArray = new ArrayList<>();
+            //Task task = new Task("UTEP", "Study", 31.7700, -106.5050);
+            //this.taskArray.add(task);
         }
-
-        // UTEP location
-        utepLocation.setLatitude(31.7700);
-        utepLocation.setLongitude(-106.5050);
 
         // Get the location manager
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -199,9 +198,18 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
     private void setUpMap() {
         mMap.setMyLocationEnabled(true);
         mMap.setOnMarkerDragListener(this);
-        mMap.addMarker(new MarkerOptions().position(new LatLng(utepLocation.getLatitude(),
-                utepLocation.getLongitude())).title("Marker").draggable(true));
+        refreshMap();
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(this.userLat, this.userLng), 12.0f));
+    }
+
+    public void refreshMap() {
+        mMap.clear();
+        Iterator i = this.taskArray.iterator();
+        while(i.hasNext()) {
+            Task t = (Task) i.next();
+            mMap.addMarker(new MarkerOptions().position(new LatLng(t.getLat(),
+                    t.getLng())).title(t.getTitle()).draggable(true));
+        }
     }
 
     @Override

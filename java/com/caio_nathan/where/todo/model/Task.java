@@ -13,6 +13,14 @@ public class Task implements Parcelable {
     private double lat;
     private double lng;
 
+    public Task(String title, String description, String address, double lat, double lng) {
+        this.title = title;
+        this.description = description;
+        this.address = address;
+        this.lat = lat;
+        this.lng = lng;
+    }
+
     public Task(String title, String description, double lat, double lng) {
         this.title = title;
         this.description = description;

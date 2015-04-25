@@ -5,6 +5,7 @@
     <string name="action_add_task">Add</string>
     <string name="title">Title</string>
     <string name="description">Description</string>
+    <string name="address">Address</string>
     <string name="add_task">Adding task</string>
     <string name="cancel">Cancel</string>
     <string name="action_settings">Settings</string>
