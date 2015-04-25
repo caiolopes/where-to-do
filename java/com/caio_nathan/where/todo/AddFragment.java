@@ -11,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
+import com.caio_nathan.where.todo.model.Task;
+
 
 /**
  * A simple implements Parcelable {@link Fragment} subclass.
@@ -36,17 +38,19 @@ public class AddFragment extends DialogFragment {
                     public void onClick(DialogInterface dialog, int id) {
                         // Add  task
                         EditText title = (EditText) view.findViewById(R.id.title);
-                        EditText description = (EditText) AddFragment.this.getActivity()
-                                .findViewById(R.id.description);
+                        EditText description = (EditText) view.findViewById(R.id.description);
+
+                        Task task = new Task(title.getText().toString(),
+                                description.getText().toString(), "");
 
                         if (AddFragment.this.getActivity() instanceof ListActivity) {
                             ((ListActivity) AddFragment.this.getActivity())
-                            .getTasks().add(title.getText().toString());
+                                    .getTasks().add(task);
                             ((ListActivity) AddFragment.this.getActivity())
                                     .arrayAdapter.notifyDataSetChanged();
                         } else if (AddFragment.this.getActivity() instanceof MapsActivity) {
                             ((MapsActivity) AddFragment.this.getActivity())
-                                    .getTasks().add(title.getText().toString());
+                                    .getTasks().add(task);
                         }
                     }
                 })

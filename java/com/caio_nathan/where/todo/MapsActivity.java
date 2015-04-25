@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.caio_nathan.where.todo.model.Task;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
@@ -34,7 +35,7 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
     private LocationManager locationManager;
     private String provider;
     private Location utepLocation = new Location("A");
-    private ArrayList<String> taskArray;
+    private ArrayList<Task> taskArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +46,7 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
         Bundle extras = getIntent().getExtras();
 
         if (extras != null) {
-            this.taskArray = extras.getStringArrayList("TASK_ARRAY");
+            this.taskArray = extras.getParcelableArrayList("TASK_ARRAY");
         } else {
             this.taskArray = new ArrayList<>();
         }
@@ -129,7 +130,7 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
                 return true;
             case R.id.action_listview:
                 Intent i = new Intent(this, ListActivity.class);
-                i.putStringArrayListExtra("TASK_ARRAY", this.taskArray);
+                i.putParcelableArrayListExtra("TASK_ARRAY", this.taskArray);
                 finish();
                 startActivity(i);
                 return true;
@@ -220,7 +221,7 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
         onLocationChanged(mMap.getMyLocation());
     }
     // Getters and Setters
-    public ArrayList<String> getTasks() {
+    public ArrayList<Task> getTasks() {
         return taskArray;
     }
 }

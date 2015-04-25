@@ -9,14 +9,17 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.caio_nathan.where.todo.model.Task;
+
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Created by caiolopes on 4/23/15.
  */
 public class ListActivity extends FragmentActivity {
     final String TAG = this.getClass().getSimpleName();
-    private ArrayList<String> taskArray;
+    private ArrayList<Task> taskArray;
     ArrayAdapter<String> arrayAdapter;
 
     @Override
@@ -27,7 +30,7 @@ public class ListActivity extends FragmentActivity {
         Bundle extras = getIntent().getExtras();
 
         if (extras != null) {
-            this.taskArray = extras.getStringArrayList("TASK_ARRAY");
+            this.taskArray = extras.getParcelableArrayList("TASK_ARRAY");
         } else {
             this.taskArray = new ArrayList<>();
         }
@@ -37,10 +40,18 @@ public class ListActivity extends FragmentActivity {
         // This is the array adapter, it takes the context of the activity as a
         // first parameter, the type of list view as a second parameter and your
         // array as a third parameter.
+
+        Iterator i = taskArray.iterator();
+        ArrayList<String> array = new ArrayList<>();
+        while(i.hasNext()) {
+            Task t = (Task) i.next();
+            array.add(t.getTitle());
+        }
+
         arrayAdapter = new ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_list_item_1,
-                this.taskArray );
+                array );
 
         lv.setAdapter(arrayAdapter);
     }
@@ -65,7 +76,7 @@ public class ListActivity extends FragmentActivity {
                 return true;
             case R.id.action_map:
                 Intent i = new Intent(this, MapsActivity.class);
-                i.putStringArrayListExtra("TASK_ARRAY", this.taskArray);
+                i.putParcelableArrayListExtra("TASK_ARRAY", this.taskArray);
                 finish();
                 startActivity(i);
             case R.id.action_add_task:
@@ -77,7 +88,7 @@ public class ListActivity extends FragmentActivity {
         }
     }
     // Getters and Setters
-    public ArrayList<String> getTasks() {
+    public ArrayList<Task> getTasks() {
         return taskArray;
     }
 }
