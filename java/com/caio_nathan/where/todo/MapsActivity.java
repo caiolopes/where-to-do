@@ -22,6 +22,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+
 
 public class MapsActivity extends FragmentActivity implements LocationListener, OnMarkerDragListener {
 
@@ -32,11 +34,21 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
     private LocationManager locationManager;
     private String provider;
     private Location utepLocation = new Location("A");
+    private ArrayList<String> taskArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        // Tasks
+        Bundle extras = getIntent().getExtras();
+
+        if (extras != null) {
+            this.taskArray = extras.getStringArrayList("TASK_ARRAY");
+        } else {
+            this.taskArray = new ArrayList<>();
+        }
 
         // UTEP location
         utepLocation.setLatitude(31.7700);
@@ -117,6 +129,8 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
                 return true;
             case R.id.action_listview:
                 Intent i = new Intent(this, ListActivity.class);
+                i.putStringArrayListExtra("TASK_ARRAY", this.taskArray);
+                finish();
                 startActivity(i);
                 return true;
             case R.id.action_add_task:
@@ -204,5 +218,9 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
         this.utepLocation.setLatitude(marker.getPosition().latitude);
         this.utepLocation.setLongitude(marker.getPosition().longitude);
         onLocationChanged(mMap.getMyLocation());
+    }
+    // Getters and Setters
+    public ArrayList<String> getTasks() {
+        return taskArray;
     }
 }

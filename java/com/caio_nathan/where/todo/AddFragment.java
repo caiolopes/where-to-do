@@ -8,16 +8,15 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.EditText;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple implements Parcelable {@link Fragment} subclass.
  */
 public class AddFragment extends DialogFragment {
-
-
     public AddFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -28,13 +27,27 @@ public class AddFragment extends DialogFragment {
 
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
-        builder.setView(inflater.inflate(R.layout.fragment_add, null))
+        final View view = inflater.inflate(R.layout.fragment_add, null);
+        builder.setView(view)
                 .setTitle(R.string.add_task)
-                // Add action buttons
+                        // Add action buttons
                 .setPositiveButton(R.string.action_add_task, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        // sign in the user ...
+                        // Add  task
+                        EditText title = (EditText) view.findViewById(R.id.title);
+                        EditText description = (EditText) AddFragment.this.getActivity()
+                                .findViewById(R.id.description);
+
+                        if (AddFragment.this.getActivity() instanceof ListActivity) {
+                            ((ListActivity) AddFragment.this.getActivity())
+                            .getTasks().add(title.getText().toString());
+                            ((ListActivity) AddFragment.this.getActivity())
+                                    .arrayAdapter.notifyDataSetChanged();
+                        } else if (AddFragment.this.getActivity() instanceof MapsActivity) {
+                            ((MapsActivity) AddFragment.this.getActivity())
+                                    .getTasks().add(title.getText().toString());
+                        }
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

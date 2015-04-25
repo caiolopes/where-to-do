@@ -1,21 +1,48 @@
 package com.caio_nathan.where.todo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import java.util.ArrayList;
 
 /**
  * Created by caiolopes on 4/23/15.
  */
 public class ListActivity extends FragmentActivity {
     final String TAG = this.getClass().getSimpleName();
+    private ArrayList<String> taskArray;
+    ArrayAdapter<String> arrayAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
+
+        Bundle extras = getIntent().getExtras();
+
+        if (extras != null) {
+            this.taskArray = extras.getStringArrayList("TASK_ARRAY");
+        } else {
+            this.taskArray = new ArrayList<>();
+        }
+
+        ListView lv = (ListView) findViewById(R.id.task_list);
+
+        // This is the array adapter, it takes the context of the activity as a
+        // first parameter, the type of list view as a second parameter and your
+        // array as a third parameter.
+        arrayAdapter = new ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_list_item_1,
+                this.taskArray );
+
+        lv.setAdapter(arrayAdapter);
     }
 
     @Override
@@ -37,7 +64,10 @@ public class ListActivity extends FragmentActivity {
             case R.id.action_settings:
                 return true;
             case R.id.action_map:
-                onBackPressed();
+                Intent i = new Intent(this, MapsActivity.class);
+                i.putStringArrayListExtra("TASK_ARRAY", this.taskArray);
+                finish();
+                startActivity(i);
             case R.id.action_add_task:
                 AddFragment addFragment = new AddFragment();
                 addFragment.show(getSupportFragmentManager(), "Add task");
@@ -45,5 +75,9 @@ public class ListActivity extends FragmentActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+    // Getters and Setters
+    public ArrayList<String> getTasks() {
+        return taskArray;
     }
 }
