@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.caio_nathan.where.todo.model.Task;
+import com.caio_nathan.where.todo.model.TasksDbHelper;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -21,18 +22,20 @@ public class ListActivity extends FragmentActivity {
     final String TAG = this.getClass().getSimpleName();
     private ArrayList<Task> taskArray;
     ArrayAdapter<String> arrayAdapter;
+    public TasksDbHelper mDbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
+        mDbHelper = new TasksDbHelper(this);
 
         Bundle extras = getIntent().getExtras();
 
         if (extras != null) {
             this.taskArray = extras.getParcelableArrayList("TASK_ARRAY");
         } else {
-            this.taskArray = new ArrayList<>();
+            this.taskArray = mDbHelper.getTasks();
         }
 
         ListView lv = (ListView) findViewById(R.id.task_list);
@@ -80,7 +83,7 @@ public class ListActivity extends FragmentActivity {
                 finish();
                 startActivity(i);
             case R.id.action_add_task:
-                AddFragment addFragment = new AddFragment();
+                AddFragment addFragment = AddFragment.newInstance(0);
                 addFragment.show(getSupportFragmentManager(), "Add task");
                 return true;
             default:

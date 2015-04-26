@@ -1,7 +1,9 @@
 package com.caio_nathan.where.todo;
 
 import android.content.Intent;
+import android.location.Address;
 import android.location.Criteria;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -15,6 +17,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.caio_nathan.where.todo.model.Task;
+import com.caio_nathan.where.todo.model.TasksDbHelper;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
@@ -23,8 +26,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 
 public class MapsActivity extends FragmentActivity implements LocationListener, OnMarkerDragListener {
@@ -37,11 +42,13 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
     private String provider;
     private Location utepLocation = new Location("A");
     private ArrayList<Task> taskArray;
+    public TasksDbHelper mDbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        mDbHelper = new TasksDbHelper(this);
 
         // Tasks
         Bundle extras = getIntent().getExtras();
@@ -49,9 +56,7 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
         if (extras != null) {
             this.taskArray = extras.getParcelableArrayList("TASK_ARRAY");
         } else {
-            this.taskArray = new ArrayList<>();
-            //Task task = new Task("UTEP", "Study", 31.7700, -106.5050);
-            //this.taskArray.add(task);
+            this.taskArray = mDbHelper.getTasks();
         }
 
         // Get the location manager
@@ -81,6 +86,42 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
             Log.e(TAG, "Error");
         }
         setUpMapIfNeeded(this.userLat, this.userLng);
+
+        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            LatLng point;
+            @Override
+            public void onMapLongClick(LatLng point) {
+                String address = MapsActivity.this.getAddressFromLocation(point.latitude,
+                                    point.longitude);
+                if (address != null) {
+                    Task t = new Task();
+                    t.setLat(point.latitude);
+                    t.setLng(point.longitude);
+                    t.setAddress(address);
+                    taskArray.add(t);
+                    AddFragment addFragment = AddFragment.newInstance(1);
+                    addFragment.show(getSupportFragmentManager(), "Add task");
+                }
+            }
+        });
+    }
+
+    public String getAddressFromLocation(double latitude, double longitude) {
+        Geocoder geoCoder = new Geocoder(this.getApplicationContext());
+        List<Address> addresses = null;
+        try {
+            addresses = geoCoder.getFromLocation(latitude, longitude, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if ((addresses != null ? addresses.size() : 0) > 0) {
+            String result = addresses.get(0).getFeatureName() + ", "
+                            + addresses.get(0).getLocality() + ", "
+                            + addresses.get(0).getAdminArea() + ", "
+                            + addresses.get(0).getCountryName();
+            return result;
+        }
+        return null;
     }
 
     /* Request updates at startup */
@@ -102,10 +143,21 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
     public void onLocationChanged(Location location) {
         this.userLat = location.getLatitude();
         this.userLng = location.getLongitude();
-        double distance = utepLocation.distanceTo(location);
-        if (distance < 1000) {
-            Toast.makeText(this, "Arrived!",
-                    Toast.LENGTH_SHORT).show();
+
+        Iterator i = this.taskArray.iterator();
+        while(i.hasNext()) {
+            Task t = (Task) i.next();
+            if (!t.isShowed()) {
+                Location taskLocation = new Location(t.getTitle());
+                taskLocation.setLatitude(t.getLat());
+                taskLocation.setLongitude(t.getLng());
+                double distance = taskLocation.distanceTo(location);
+                if (distance < 1000) {
+                    Toast.makeText(this, "You are near to task '" + t.getTitle() + "'!",
+                            Toast.LENGTH_SHORT).show();
+                    t.setShowed(true);
+                }
+            }
         }
     }
 
@@ -134,7 +186,7 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
                 startActivity(i);
                 return true;
             case R.id.action_add_task:
-                AddFragment addFragment = new AddFragment();
+                AddFragment addFragment = AddFragment.newInstance(0);
                 addFragment.show(getSupportFragmentManager(), "Add task");
                 return true;
             default:

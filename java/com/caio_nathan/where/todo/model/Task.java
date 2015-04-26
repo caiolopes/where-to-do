@@ -12,6 +12,11 @@ public class Task implements Parcelable {
     private String address;
     private double lat;
     private double lng;
+    private boolean showed = false;
+
+    public Task() {
+
+    }
 
     public Task(String title, String description, String address, double lat, double lng) {
         this.title = title;
@@ -74,12 +79,17 @@ public class Task implements Parcelable {
         this.lng = lng;
     }
 
+    public boolean isShowed() { return showed; }
+
+    public void setShowed(boolean showed) { this.showed = showed; }
+
     protected Task(Parcel in) {
         title = in.readString();
         description = in.readString();
         address = in.readString();
         lat = in.readDouble();
         lng = in.readDouble();
+        showed = in.readByte() != 0;
     }
 
     @Override
@@ -94,6 +104,7 @@ public class Task implements Parcelable {
         dest.writeString(address);
         dest.writeDouble(lat);
         dest.writeDouble(lng);
+        dest.writeByte((byte) (showed ? 1 : 0));
     }
 
     @SuppressWarnings("unused")
