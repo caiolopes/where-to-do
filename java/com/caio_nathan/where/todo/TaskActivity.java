@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -43,8 +42,10 @@ public class TaskActivity extends FragmentActivity {
     public void setTaskInfo() {
         TextView title = (TextView) findViewById(R.id.title);
         TextView description = (TextView) findViewById(R.id.description);
+        TextView address = (TextView) findViewById(R.id.address);
         title.setText(this.task.getTitle());
         description.setText(this.task.getDescription());
+        address.setText(this.task.getAddress());
     }
 
     public void removeTask(View view) {
@@ -82,7 +83,6 @@ public class TaskActivity extends FragmentActivity {
         returnIntent.putExtra("NEW_TASK_TITLE", this.task.getTitle());
         returnIntent.putExtra("TASK_DESC", this.task.getDescription());
         setResult(2, returnIntent);
-        Log.v("TASK_ID", "Task ID: " + this.task.getId());
         if (this.mDbHelper.updateTask(this.task) > 0) {
             Toast.makeText(this, "Edited!",
                     Toast.LENGTH_SHORT).show();

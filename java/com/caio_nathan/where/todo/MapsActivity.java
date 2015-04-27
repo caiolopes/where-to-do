@@ -1,5 +1,8 @@
 package com.caio_nathan.where.todo;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Criteria;
@@ -10,6 +13,8 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -154,6 +159,35 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
                     Toast.makeText(this, "You are near to task '" + t.getTitle() + "'!",
                             Toast.LENGTH_SHORT).show();
                     t.setShowed(true);
+                    //mDbHelper.updateTask(t);
+                    NotificationCompat.Builder mBuilder =
+                            new NotificationCompat.Builder(this)
+                                    .setSmallIcon(R.mipmap.ic_launcher)
+                                    .setContentTitle(t.getTitle())
+                                    .setContentText(t.getDescription());
+                    // Creates an explicit intent for an Activity in your app
+                    Intent resultIntent = new Intent(this, TaskActivity.class);
+                    resultIntent.putExtra("TASK", t);
+
+                    // The stack builder object will contain an artificial back stack for the
+                    // started Activity.
+                    // This ensures that navigating backward from the Activity leads out of
+                    // your application to the Home screen.
+                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+                    // Adds the back stack for the Intent (but not the Intent itself)
+                    stackBuilder.addParentStack(TaskActivity.class);
+                    // Adds the Intent that starts the Activity to the top of the stack
+                    stackBuilder.addNextIntent(resultIntent);
+                    PendingIntent resultPendingIntent =
+                            stackBuilder.getPendingIntent(
+                                    0,
+                                    PendingIntent.FLAG_UPDATE_CURRENT
+                            );
+                    mBuilder.setContentIntent(resultPendingIntent);
+                    NotificationManager mNotificationManager =
+                            (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    // mId allows you to update the notification later on.
+                    mNotificationManager.notify(((int) t.getId()), mBuilder.build());
                 }
             }
         }
@@ -281,6 +315,7 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
                 t.setLng(marker.getPosition().longitude);
                 t.setAddress(getAddressFromLocation(marker.getPosition().latitude,
                         marker.getPosition().longitude));
+                mDbHelper.updateTask(t);
             }
         }
     }

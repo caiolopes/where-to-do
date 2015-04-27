@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -77,7 +76,6 @@ public class TasksDbHelper extends SQLiteOpenHelper {
                 null, null, null, null, null);
         while (cursor.moveToNext()) {
             Task task = new Task();
-            Log.v("TASK_ID", "Adding ID: " + cursor.getString(0));
             task.setId(Long.parseLong(cursor.getString(0)));
             task.setTitle(cursor.getString(1));
             task.setDescription(cursor.getString(2));

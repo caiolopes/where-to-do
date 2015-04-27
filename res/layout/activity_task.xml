@@ -6,34 +6,52 @@
         android:text="@string/task"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="16dp"
-        android:textSize="35sp"/>
+        android:textSize="30sp"/>
     <TextView
         android:text="@string/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
-        android:layout_marginTop="16dp" />
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="25dp"
+        android:textSize="25sp"/>
     <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
-        android:layout_marginTop="4dp" />
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:textSize="20sp"/>
     <TextView
         android:text="@string/description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
-        android:layout_marginTop="4dp" />
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:textSize="25sp"/>
     <TextView
         android:id="@+id/description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
-        android:layout_marginBottom="20dp"/>
+        android:textSize="20sp"/>
+    <TextView
+        android:text="@string/address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:textSize="25sp"/>
+    <TextView
+        android:id="@+id/address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="20dp"
+        android:textSize="20sp"/>
     <Button
         android:onClick="editTask"
         android:text="@string/edit"
