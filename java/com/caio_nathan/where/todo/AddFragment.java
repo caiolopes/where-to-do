@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 
 import com.caio_nathan.where.todo.model.Task;
@@ -30,10 +31,12 @@ public class AddFragment extends DialogFragment {
      * Create a new instance of MyDialogFragment, providing "num"
      * as an argument.
      */
-    public static AddFragment newInstance(int type) {
+    public static AddFragment newInstance(int type, double userLat, double userLng) {
         AddFragment frag = new AddFragment();
         Bundle args = new Bundle();
         args.putInt("type", type);
+        args.putDouble("lat", userLat);
+        args.putDouble("lng", userLng);
         frag.setArguments(args);
         return frag;
     }
@@ -41,6 +44,8 @@ public class AddFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final int type = getArguments().getInt("type");
+        final double userLat = getArguments().getDouble("lat");
+        final double userLng = getArguments().getDouble("lng");
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -65,20 +70,42 @@ public class AddFragment extends DialogFragment {
                         EditText description = (EditText) view.findViewById(R.id.description);
                         if (type == 0) {
                             EditText address = (EditText) view.findViewById(R.id.address);
+                            CheckBox currentLocation = (CheckBox) view.findViewById(R.id.current_location);
 
                             Geocoder geoCoder = new Geocoder(AddFragment.this.getActivity());
                             List<Address> addresses = null;
-                            try {
-                                addresses = geoCoder.getFromLocationName(address.getText().toString(), 5);
-                            } catch (IOException e) {
-                                e.printStackTrace();
+                            if (!currentLocation.isChecked()) {
+                                try {
+                                    addresses = geoCoder.getFromLocationName(address.getText().toString(), 5);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                try {
+                                    addresses = geoCoder.getFromLocation(userLat, userLng, 1);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                             }
                             if ((addresses != null ? addresses.size() : 0) > 0) {
-                                Task task = new Task(title.getText().toString(),
-                                        description.getText().toString(),
-                                        address.getText().toString(),
-                                        addresses.get(0).getLatitude(),
-                                        addresses.get(0).getLongitude());
+                                Task task;
+                                if (!currentLocation.isChecked()) {
+                                    task = new Task(title.getText().toString(),
+                                            description.getText().toString(),
+                                            address.getText().toString(),
+                                            addresses.get(0).getLatitude(),
+                                            addresses.get(0).getLongitude());
+                                } else {
+                                    String addr = addresses.get(0).getFeatureName() + ", "
+                                            + addresses.get(0).getLocality() + ", "
+                                            + addresses.get(0).getAdminArea() + ", "
+                                            + addresses.get(0).getCountryName();
+                                    task = new Task(title.getText().toString(),
+                                            description.getText().toString(),
+                                            addr,
+                                            userLat,
+                                            userLng);
+                                }
 
                                 if (AddFragment.this.getActivity() instanceof ListActivity) {
                                     ListActivity activity = ((ListActivity) AddFragment.this.getActivity());
@@ -96,7 +123,7 @@ public class AddFragment extends DialogFragment {
                         } else {
                             if (AddFragment.this.getActivity() instanceof MapsActivity) {
                                 MapsActivity activity = ((MapsActivity) AddFragment.this.getActivity());
-                                int index = activity.getTasks().size()-1;
+                                int index = activity.getTasks().size() - 1;
                                 Task task = activity.getTasks().get(index);
                                 task.setTitle(title.getText().toString());
                                 task.setId(activity.mDbHelper.addTask(task));
@@ -111,7 +138,7 @@ public class AddFragment extends DialogFragment {
                         if (type == 1) {
                             if (AddFragment.this.getActivity() instanceof MapsActivity) {
                                 MapsActivity activity = ((MapsActivity) AddFragment.this.getActivity());
-                                int index = activity.getTasks().size()-1;
+                                int index = activity.getTasks().size() - 1;
                                 activity.getTasks().remove(index);
                             }
                         }

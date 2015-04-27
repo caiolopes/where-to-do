@@ -26,6 +26,8 @@ public class ListActivity extends FragmentActivity {
     public ArrayList<String> titleArray;
     public ArrayAdapter<String> arrayAdapter;
     public TasksDbHelper mDbHelper;
+    private double userLat;
+    private double userLng;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,8 @@ public class ListActivity extends FragmentActivity {
 
         if (extras != null) {
             this.taskArray = extras.getParcelableArrayList("TASK_ARRAY");
+            this.userLat = extras.getDouble("USER_LAT");
+            this.userLng = extras.getDouble("USER_LNG");
         } else {
             this.taskArray = mDbHelper.getTasks();
         }
@@ -72,6 +76,8 @@ public class ListActivity extends FragmentActivity {
                 // do what you intend to do on click of listview row
                 Intent intent = new Intent(ListActivity.this, TaskActivity.class);
                 intent.putExtra("TASK", ListActivity.this.getTasks().get(position));
+                intent.putExtra("USER_LAT", userLat);
+                intent.putExtra("USER_LNG", userLng);
                 startActivityForResult(intent, 1);
             }
         });
@@ -133,7 +139,7 @@ public class ListActivity extends FragmentActivity {
                 finish();
                 startActivity(i);
             case R.id.action_add_task:
-                AddFragment addFragment = AddFragment.newInstance(0);
+                AddFragment addFragment = AddFragment.newInstance(0, this.userLat, this.userLng);
                 addFragment.show(getSupportFragmentManager(), "Add task");
                 return true;
             default:

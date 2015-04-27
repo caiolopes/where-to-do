@@ -23,6 +23,8 @@ public class TaskActivity extends FragmentActivity {
     final String TAG = this.getClass().getSimpleName();
     private Task task;
     public TasksDbHelper mDbHelper;
+    private double userLat;
+    private double userLng;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +36,8 @@ public class TaskActivity extends FragmentActivity {
 
         if (extras != null) {
             this.task = extras.getParcelable("TASK");
+            this.userLat = extras.getDouble("USER_LAT");
+            this.userLng = extras.getDouble("USER_LNG");
         }
 
         setTaskInfo();
@@ -110,7 +114,7 @@ public class TaskActivity extends FragmentActivity {
                 Intent i = new Intent(this, MapsActivity.class);
                 startActivity(i);
             case R.id.action_add_task:
-                AddFragment addFragment = AddFragment.newInstance(0);
+                AddFragment addFragment = AddFragment.newInstance(0, this.userLat, this.userLng);
                 addFragment.show(getSupportFragmentManager(), "Add task");
                 return true;
             default:

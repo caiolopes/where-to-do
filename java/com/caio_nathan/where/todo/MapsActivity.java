@@ -95,14 +95,14 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
             @Override
             public void onMapLongClick(LatLng point) {
                 String address = MapsActivity.this.getAddressFromLocation(point.latitude,
-                                    point.longitude);
+                        point.longitude);
                 if (address != null) {
                     Task t = new Task();
                     t.setLat(point.latitude);
                     t.setLng(point.longitude);
                     t.setAddress(address);
                     taskArray.add(t);
-                    AddFragment addFragment = AddFragment.newInstance(1);
+                    AddFragment addFragment = AddFragment.newInstance(1, userLat, userLng);
                     addFragment.show(getSupportFragmentManager(), "Add task");
                 }
             }
@@ -119,9 +119,9 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
         }
         if ((addresses != null ? addresses.size() : 0) > 0) {
             String result = addresses.get(0).getFeatureName() + ", "
-                            + addresses.get(0).getLocality() + ", "
-                            + addresses.get(0).getAdminArea() + ", "
-                            + addresses.get(0).getCountryName();
+                    + addresses.get(0).getLocality() + ", "
+                    + addresses.get(0).getAdminArea() + ", "
+                    + addresses.get(0).getCountryName();
             return result;
         }
         return null;
@@ -148,7 +148,7 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
         this.userLng = location.getLongitude();
 
         Iterator i = this.taskArray.iterator();
-        while(i.hasNext()) {
+        while (i.hasNext()) {
             Task t = (Task) i.next();
             if (!t.isShowed()) {
                 Location taskLocation = new Location(t.getTitle());
@@ -214,11 +214,13 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
             case R.id.action_listview:
                 Intent i = new Intent(this, ListActivity.class);
                 i.putParcelableArrayListExtra("TASK_ARRAY", this.taskArray);
+                i.putExtra("USER_LAT", this.userLat);
+                i.putExtra("USER_LNG", this.userLng);
                 finish();
                 startActivity(i);
                 return true;
             case R.id.action_add_task:
-                AddFragment addFragment = AddFragment.newInstance(0);
+                AddFragment addFragment = AddFragment.newInstance(0, this.userLat, this.userLng);
                 addFragment.show(getSupportFragmentManager(), "Add task");
                 return true;
             default:
@@ -289,7 +291,7 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
     public void refreshMap() {
         mMap.clear();
         Iterator i = this.taskArray.iterator();
-        while(i.hasNext()) {
+        while (i.hasNext()) {
             Task t = (Task) i.next();
             mMap.addMarker(new MarkerOptions().position(new LatLng(t.getLat(),
                     t.getLng())).title(t.getTitle()).draggable(true));
@@ -308,7 +310,7 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
 
     @Override
     public void onMarkerDragEnd(Marker marker) {
-        for(Task t : taskArray) {
+        for (Task t : taskArray) {
             if (t.getTitle().equals(marker.getTitle())) {
                 t.setShowed(false);
                 t.setLat(marker.getPosition().latitude);
@@ -319,8 +321,17 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
             }
         }
     }
-    // Getters and Setters
+
+    // Getters
     public ArrayList<Task> getTasks() {
         return taskArray;
+    }
+
+    public double getUserLat() {
+        return userLat;
+    }
+
+    public double getUserLng() {
+        return userLng;
     }
 }
