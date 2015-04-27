@@ -75,37 +75,33 @@ public class AddFragment extends DialogFragment {
                             }
                             if ((addresses != null ? addresses.size() : 0) > 0) {
                                 Task task = new Task(title.getText().toString(),
-                                        description.getText().toString(), address.getText().toString(),
-                                        addresses.get(0).getLatitude(), addresses.get(0).getLongitude());
+                                        description.getText().toString(),
+                                        address.getText().toString(),
+                                        addresses.get(0).getLatitude(),
+                                        addresses.get(0).getLongitude());
 
                                 if (AddFragment.this.getActivity() instanceof ListActivity) {
-                                    ((ListActivity) AddFragment.this.getActivity())
-                                            .getTasks().add(task);
-                                    ((ListActivity) AddFragment.this.getActivity())
-                                            .arrayAdapter.notifyDataSetChanged();
-                                    ((ListActivity) AddFragment.this.getActivity())
-                                            .mDbHelper.addTask(task);
+                                    ListActivity activity = ((ListActivity) AddFragment.this.getActivity());
+                                    task.setId(activity.mDbHelper.addTask(task));
+                                    activity.getTasks().add(task);
+                                    activity.titleArray.add(task.getTitle());
+                                    activity.arrayAdapter.notifyDataSetChanged();
                                 } else if (AddFragment.this.getActivity() instanceof MapsActivity) {
-                                    ((MapsActivity) AddFragment.this.getActivity())
-                                            .getTasks().add(task);
-                                    ((MapsActivity) AddFragment.this.getActivity())
-                                            .refreshMap();
-                                    ((MapsActivity) AddFragment.this.getActivity())
-                                            .mDbHelper.addTask(task);
+                                    MapsActivity activity = ((MapsActivity) AddFragment.this.getActivity());
+                                    task.setId(activity.mDbHelper.addTask(task));
+                                    activity.getTasks().add(task);
+                                    activity.refreshMap();
                                 }
                             }
                         } else {
                             if (AddFragment.this.getActivity() instanceof MapsActivity) {
-                                int index = ((MapsActivity) AddFragment.this.getActivity())
-                                        .getTasks().size()-1;
-                                Task task = ((MapsActivity) AddFragment.this.getActivity())
-                                        .getTasks().get(index);
+                                MapsActivity activity = ((MapsActivity) AddFragment.this.getActivity());
+                                int index = activity.getTasks().size()-1;
+                                Task task = activity.getTasks().get(index);
                                 task.setTitle(title.getText().toString());
+                                task.setId(activity.mDbHelper.addTask(task));
                                 task.setDescription(description.getText().toString());
-                                ((MapsActivity) AddFragment.this.getActivity())
-                                        .refreshMap();
-                                ((MapsActivity) AddFragment.this.getActivity())
-                                        .mDbHelper.addTask(task);
+                                activity.refreshMap();
                             }
                         }
                     }
@@ -114,10 +110,9 @@ public class AddFragment extends DialogFragment {
                     public void onClick(DialogInterface dialog, int id) {
                         if (type == 1) {
                             if (AddFragment.this.getActivity() instanceof MapsActivity) {
-                                int index = ((MapsActivity) AddFragment.this.getActivity())
-                                        .getTasks().size()-1;
-                               ((MapsActivity) AddFragment.this.getActivity())
-                                        .getTasks().remove(index);
+                                MapsActivity activity = ((MapsActivity) AddFragment.this.getActivity());
+                                int index = activity.getTasks().size()-1;
+                                activity.getTasks().remove(index);
                             }
                         }
                         AddFragment.this.getDialog().cancel();

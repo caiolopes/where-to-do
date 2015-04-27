@@ -7,6 +7,7 @@ import android.os.Parcelable;
  * Created by caiolopes on 4/25/15.
  */
 public class Task implements Parcelable {
+    private long taskId;
     private String title;
     private String description;
     private String address;
@@ -26,18 +27,9 @@ public class Task implements Parcelable {
         this.lng = lng;
     }
 
-    public Task(String title, String description, double lat, double lng) {
-        this.title = title;
-        this.description = description;
-        this.lat = lat;
-        this.lng = lng;
-    }
+    public long getId() { return taskId; }
 
-    public Task(String title, String description, String address) {
-        this.title = title;
-        this.description = description;
-        this.address = address;
-    }
+    public void setId(long taskId) { this.taskId = taskId; }
 
     public String getTitle() {
         return title;
@@ -84,6 +76,7 @@ public class Task implements Parcelable {
     public void setShowed(boolean showed) { this.showed = showed; }
 
     protected Task(Parcel in) {
+        taskId = in.readLong();
         title = in.readString();
         description = in.readString();
         address = in.readString();
@@ -99,6 +92,7 @@ public class Task implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(taskId);
         dest.writeString(title);
         dest.writeString(description);
         dest.writeString(address);

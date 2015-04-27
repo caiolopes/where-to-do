@@ -40,7 +40,6 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
     private double userLng = 0;
     private LocationManager locationManager;
     private String provider;
-    private Location utepLocation = new Location("A");
     private ArrayList<Task> taskArray;
     public TasksDbHelper mDbHelper;
 
@@ -88,7 +87,6 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
         setUpMapIfNeeded(this.userLat, this.userLng);
 
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
-            LatLng point;
             @Override
             public void onMapLongClick(LatLng point) {
                 String address = MapsActivity.this.getAddressFromLocation(point.latitude,
@@ -276,9 +274,15 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
 
     @Override
     public void onMarkerDragEnd(Marker marker) {
-        this.utepLocation.setLatitude(marker.getPosition().latitude);
-        this.utepLocation.setLongitude(marker.getPosition().longitude);
-        onLocationChanged(mMap.getMyLocation());
+        for(Task t : taskArray) {
+            if (t.getTitle().equals(marker.getTitle())) {
+                t.setShowed(false);
+                t.setLat(marker.getPosition().latitude);
+                t.setLng(marker.getPosition().longitude);
+                t.setAddress(getAddressFromLocation(marker.getPosition().latitude,
+                        marker.getPosition().longitude));
+            }
+        }
     }
     // Getters and Setters
     public ArrayList<Task> getTasks() {

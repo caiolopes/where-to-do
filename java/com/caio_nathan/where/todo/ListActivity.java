@@ -6,6 +6,8 @@ import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -21,7 +23,8 @@ import java.util.Iterator;
 public class ListActivity extends FragmentActivity {
     final String TAG = this.getClass().getSimpleName();
     private ArrayList<Task> taskArray;
-    ArrayAdapter<String> arrayAdapter;
+    public ArrayList<String> titleArray;
+    public ArrayAdapter<String> arrayAdapter;
     public TasksDbHelper mDbHelper;
 
     @Override
@@ -45,18 +48,65 @@ public class ListActivity extends FragmentActivity {
         // array as a third parameter.
 
         Iterator i = this.taskArray.iterator();
-        ArrayList<String> array = new ArrayList<>();
+        titleArray = new ArrayList<>();
         while(i.hasNext()) {
             Task t = (Task) i.next();
-            array.add(t.getTitle());
+            titleArray.add(t.getTitle());
         }
 
         arrayAdapter = new ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_list_item_1,
-                array );
+                titleArray);
 
         lv.setAdapter(arrayAdapter);
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> adapter, View v, int position,
+                                    long arg3)
+            {
+                //String value = (String)adapter.getItemAtPosition(position);
+                // assuming string and if you want to get the value on click of list item
+                // do what you intend to do on click of listview row
+                Intent intent = new Intent(ListActivity.this, TaskActivity.class);
+                intent.putExtra("TASK", ListActivity.this.getTasks().get(position));
+                startActivityForResult(intent, 1);
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1) {
+            if(resultCode == 1) {
+                String removedTaskTitle = data.getStringExtra("TASK_TITLE");
+                int i = 0;
+                for (Task t : taskArray) {
+                    if (t.getTitle().equals(removedTaskTitle)) {
+                        this.taskArray.remove(i);
+                        this.titleArray.remove(i);
+                    }
+                    i++;
+                }
+                this.arrayAdapter.notifyDataSetChanged();
+            } else if (resultCode == 2) {
+                String oldTitle = data.getStringExtra("OLD_TASK_TITLE");
+                String newTitle = data.getStringExtra("NEW_TASK_TITLE");
+                String taskDesc = data.getStringExtra("TASK_DESC");
+                int i = 0;
+                for (Task t : taskArray) {
+                    if (t.getTitle().equals(oldTitle)) {
+                        t.setTitle(newTitle);
+                        t.setDescription(taskDesc);
+                        titleArray.set(i, newTitle);
+                    }
+                    i++;
+                }
+                this.arrayAdapter.notifyDataSetChanged();
+            }
+        }
     }
 
     @Override
@@ -90,6 +140,7 @@ public class ListActivity extends FragmentActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
     // Getters and Setters
     public ArrayList<Task> getTasks() {
         return taskArray;

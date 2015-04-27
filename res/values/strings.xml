@@ -2,12 +2,15 @@
     <string name="app_name">Where To Do</string>
     <string name="action_listview">List</string>
     <string name="action_map">Map</string>
+    <string name="task">Task</string>
     <string name="action_add_task">Add</string>
-    <string name="title">Title</string>
-    <string name="description">Description</string>
+    <string name="title">Title:</string>
+    <string name="description">Description:</string>
     <string name="address">Address</string>
     <string name="add_task">Adding task</string>
     <string name="cancel">Cancel</string>
+    <string name="remove">Remove</string>
+    <string name="edit">Edit</string>
     <string name="action_settings">Settings</string>
 
 <!-- TODO: Remove or change this placeholder text -->

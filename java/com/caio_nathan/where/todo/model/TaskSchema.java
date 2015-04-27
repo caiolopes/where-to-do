@@ -19,19 +19,20 @@ public final class TaskSchema {
         public static final String COLUMN_NAME_LATITUDE = "latitude";
         public static final String COLUMN_NAME_LONGITUDE = "longitude";
         public static final String COLUMN_NAME_ADDRESS = "address";
+        public static final String COLUMN_NAME_SHOWED = "showed";
 
         public static final String TEXT_TYPE = " TEXT";
         public static final String REAL_TYPE = " REAL";
         public static final String COMMA_SEP = ",";
         public static final String SQL_CREATE_ENTRIES =
                 "CREATE TABLE " + FeedEntry.TABLE_NAME + " (" +
-                        FeedEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-                        FeedEntry.COLUMN_NAME_ENTRY_ID + TEXT_TYPE + COMMA_SEP +
+                        FeedEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                         FeedEntry.COLUMN_NAME_TITLE + TEXT_TYPE + COMMA_SEP +
                         FeedEntry.COLUMN_NAME_DESCRIPTION + TEXT_TYPE + COMMA_SEP +
                         FeedEntry.COLUMN_NAME_LATITUDE + REAL_TYPE + COMMA_SEP +
                         FeedEntry.COLUMN_NAME_LONGITUDE + REAL_TYPE + COMMA_SEP +
-                        FeedEntry.COLUMN_NAME_ADDRESS + TEXT_TYPE +
+                        FeedEntry.COLUMN_NAME_ADDRESS + TEXT_TYPE + COMMA_SEP +
+                        FeedEntry.COLUMN_NAME_SHOWED + TEXT_TYPE +
                 " )";
 
         public static final String SQL_DELETE_ENTRIES =
