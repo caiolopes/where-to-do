@@ -9,6 +9,7 @@
     <string name="address">Address:</string>
     <string name="add_task">Adding task</string>
     <string name="current_location">Use current location</string>
+    <string name="notified">Notified</string>
     <string name="cancel">Cancel</string>
     <string name="remove">Remove</string>
     <string name="edit">Edit</string>

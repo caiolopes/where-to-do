@@ -87,10 +87,10 @@ public class ListActivity extends FragmentActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1) {
             if(resultCode == 1) {
-                String removedTaskTitle = data.getStringExtra("TASK_TITLE");
+                Task removedTask = data.getParcelableExtra("REMOVED_TASK");
                 int i = 0;
                 for (Task t : taskArray) {
-                    if (t.getTitle().equals(removedTaskTitle)) {
+                    if (t.getId() == removedTask.getId()) {
                         this.taskArray.remove(i);
                         this.titleArray.remove(i);
                     }
@@ -98,15 +98,12 @@ public class ListActivity extends FragmentActivity {
                 }
                 this.arrayAdapter.notifyDataSetChanged();
             } else if (resultCode == 2) {
-                String oldTitle = data.getStringExtra("OLD_TASK_TITLE");
-                String newTitle = data.getStringExtra("NEW_TASK_TITLE");
-                String taskDesc = data.getStringExtra("TASK_DESC");
+                Task editedTask  = data.getParcelableExtra("EDITED_TASK");
                 int i = 0;
                 for (Task t : taskArray) {
-                    if (t.getTitle().equals(oldTitle)) {
-                        t.setTitle(newTitle);
-                        t.setDescription(taskDesc);
-                        titleArray.set(i, newTitle);
+                    if (t.getId() == editedTask.getId()) {
+                        taskArray.set(i, editedTask);
+                        titleArray.set(i, editedTask.getTitle());
                     }
                     i++;
                 }

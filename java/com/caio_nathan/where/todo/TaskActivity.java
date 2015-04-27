@@ -9,6 +9,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,19 +49,36 @@ public class TaskActivity extends FragmentActivity {
         TextView title = (TextView) findViewById(R.id.title);
         TextView description = (TextView) findViewById(R.id.description);
         TextView address = (TextView) findViewById(R.id.address);
+        CheckBox notified = (CheckBox) findViewById(R.id.notified);
         title.setText(this.task.getTitle());
         description.setText(this.task.getDescription());
         address.setText(this.task.getAddress());
+        if (this.task.isShowed()) {
+            notified.setChecked(true);
+        } else {
+            notified.setChecked(false);
+        }
+
+        notified.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                task.setShowed(isChecked);
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra("EDITED_TASK", task);
+                setResult(2, returnIntent);
+            }
+        });
     }
 
     public void removeTask(View view) {
         if (this.mDbHelper.removeTask(this.task) > 0) {
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("REMOVED_TASK", this.task);
+            setResult(1, returnIntent);
+
             Toast.makeText(this, "Removed!",
                     Toast.LENGTH_SHORT).show();
         }
-        Intent returnIntent = new Intent();
-        returnIntent.putExtra("TASK_TITLE", this.task.getTitle());
-        setResult(1, returnIntent);
         finish();
     }
 
@@ -74,8 +93,7 @@ public class TaskActivity extends FragmentActivity {
     public void doneEditing(View view) {
         EditText title = (EditText) findViewById(R.id.title);
         EditText description = (EditText) findViewById(R.id.description);
-        Intent returnIntent = new Intent();
-        returnIntent.putExtra("OLD_TASK_TITLE", this.task.getTitle());
+
 
         this.task.setTitle(title.getText().toString());
         this.task.setDescription(description.getText().toString());
@@ -84,10 +102,11 @@ public class TaskActivity extends FragmentActivity {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
 
-        returnIntent.putExtra("NEW_TASK_TITLE", this.task.getTitle());
-        returnIntent.putExtra("TASK_DESC", this.task.getDescription());
-        setResult(2, returnIntent);
         if (this.mDbHelper.updateTask(this.task) > 0) {
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("EDITED_TASK", this.task);
+            setResult(2, returnIntent);
+
             Toast.makeText(this, "Edited!",
                     Toast.LENGTH_SHORT).show();
         }

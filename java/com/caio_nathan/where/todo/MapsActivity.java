@@ -159,7 +159,7 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
                     Toast.makeText(this, "You are near to task '" + t.getTitle() + "'!",
                             Toast.LENGTH_SHORT).show();
                     t.setShowed(true);
-                    //mDbHelper.updateTask(t);
+                    mDbHelper.updateTask(t);
                     NotificationCompat.Builder mBuilder =
                             new NotificationCompat.Builder(this)
                                     .setSmallIcon(R.mipmap.ic_launcher)
