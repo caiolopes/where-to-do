@@ -63,9 +63,14 @@ public class TaskActivity extends FragmentActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 task.setShowed(isChecked);
-                Intent returnIntent = new Intent();
-                returnIntent.putExtra("EDITED_TASK", task);
-                setResult(2, returnIntent);
+                if (mDbHelper.updateTask(task) > 0) {
+                    Intent returnIntent = new Intent();
+                    returnIntent.putExtra("EDITED_TASK", task);
+                    setResult(2, returnIntent);
+
+                    Toast.makeText(TaskActivity.this, "Edited!",
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
