@@ -1,4 +1,4 @@
-package com.caio_nathan.where.todo;
+package com.caiolopes.where.todo;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,11 +15,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.caio_nathan.where.todo.model.Task;
-import com.caio_nathan.where.todo.model.TasksDbHelper;
+import com.caiolopes.where.todo.R;
+import com.caiolopes.where.todo.model.Task;
+import com.caiolopes.where.todo.model.TasksDbHelper;
+import com.caiolopes.where.todo.AddFragment;
+import com.caiolopes.where.todo.MapsActivity;
 
 /**
- * Created by caiolopes on 4/26/15.
+ * Show information about a individual task. It also handles edition and removal.
+ * @author Caio Lopes
+ * @version 1.0
  */
 public class TaskActivity extends FragmentActivity {
     final String TAG = this.getClass().getSimpleName();
@@ -45,6 +50,9 @@ public class TaskActivity extends FragmentActivity {
         setTaskInfo();
     }
 
+    /**
+     * Get the views in the XML layout and set the information.
+     */
     public void setTaskInfo() {
         TextView title = (TextView) findViewById(R.id.title);
         TextView description = (TextView) findViewById(R.id.description);
@@ -75,6 +83,10 @@ public class TaskActivity extends FragmentActivity {
         });
     }
 
+    /**
+     * Handles the removal.
+     * @param view
+     */
     public void removeTask(View view) {
         if (this.mDbHelper.removeTask(this.task) > 0) {
             Intent returnIntent = new Intent();
@@ -87,6 +99,10 @@ public class TaskActivity extends FragmentActivity {
         finish();
     }
 
+    /**
+     * It set the view for the edition XML which have EditText fields instead of TextView.
+     * @param view
+     */
     public void editTask(View view) {
         setContentView(R.layout.activity_task_edit);
         EditText title = (EditText) findViewById(R.id.title);
@@ -95,6 +111,10 @@ public class TaskActivity extends FragmentActivity {
         description.setText(this.task.getDescription());
     }
 
+    /**
+     * Handles the edition.
+     * @param view
+     */
     public void doneEditing(View view) {
         EditText title = (EditText) findViewById(R.id.title);
         EditText description = (EditText) findViewById(R.id.description);

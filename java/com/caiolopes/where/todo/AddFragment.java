@@ -1,9 +1,7 @@
-package com.caio_nathan.where.todo;
-
+package com.caiolopes.where.todo;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.Fragment;
 import android.content.DialogInterface;
 import android.location.Address;
 import android.location.Geocoder;
@@ -14,14 +12,16 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
-import com.caio_nathan.where.todo.model.Task;
+import com.caiolopes.where.todo.model.Task;
 
 import java.io.IOException;
 import java.util.List;
 
 
 /**
- * A simple implements Parcelable {@link Fragment} subclass.
+ * Dialog Fragment class.
+ * @author Caio Lopes
+ * @version 1.0
  */
 public class AddFragment extends DialogFragment {
     public AddFragment() {
@@ -30,6 +30,10 @@ public class AddFragment extends DialogFragment {
     /**
      * Create a new instance of MyDialogFragment, providing "num"
      * as an argument.
+     * @param type
+     * @param userLat
+     * @param userLng
+     * @return instance of this fragment
      */
     public static AddFragment newInstance(int type, double userLat, double userLng) {
         AddFragment frag = new AddFragment();
@@ -41,6 +45,11 @@ public class AddFragment extends DialogFragment {
         return frag;
     }
 
+    /**
+     * Handle the all different types of insertion of a task.
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final int type = getArguments().getInt("type");

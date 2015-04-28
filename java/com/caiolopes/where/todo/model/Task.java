@@ -1,10 +1,12 @@
-package com.caio_nathan.where.todo.model;
+package com.caiolopes.where.todo.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Created by caiolopes on 4/25/15.
+ * Task model. Store all information from one task. It has all necessary constructors, getters and setters.
+ * @author Caio Lopes
+ * @version 1.0
  */
 public class Task implements Parcelable {
     private long taskId;

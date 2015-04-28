@@ -1,4 +1,4 @@
-package com.caio_nathan.where.todo;
+package com.caiolopes.where.todo;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -21,8 +21,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.caio_nathan.where.todo.model.Task;
-import com.caio_nathan.where.todo.model.TasksDbHelper;
+import com.caiolopes.where.todo.TaskActivity;
+import com.caiolopes.where.todo.model.Task;
+import com.caiolopes.where.todo.model.TasksDbHelper;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
@@ -36,16 +37,31 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-
+/**
+ * Start class, which shows a map with user's current location and all tasks as markers on the map.
+ * @author Caio Lopes
+ * @version 1.0
+ */
 public class MapsActivity extends FragmentActivity implements LocationListener, OnMarkerDragListener {
-
     final String TAG = this.getClass().getSimpleName();
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
+    /**
+     * User current latitude.
+     */
     private double userLat = 0;
+    /**
+     * User current longitude.
+     */
     private double userLng = 0;
     private LocationManager locationManager;
     private String provider;
+    /**
+     * ArrayList of all the current tasks.
+     */
     private ArrayList<Task> taskArray;
+    /**
+     * Helper which interacts with the SQLite database.
+     */
     public TasksDbHelper mDbHelper;
 
     @Override
@@ -109,6 +125,12 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
         });
     }
 
+    /**
+     * Given coordinates, return an String with the address.
+     * @param latitude
+     * @param longitude
+     * @return address
+     */
     public String getAddressFromLocation(double latitude, double longitude) {
         Geocoder geoCoder = new Geocoder(this.getApplicationContext());
         List<Address> addresses = null;
@@ -127,7 +149,9 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
         return null;
     }
 
-    /* Request updates at startup */
+    /**
+     * Request updates at startup
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -135,13 +159,21 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
         locationManager.requestLocationUpdates(provider, 400, 1, this);
     }
 
-    /* Remove the locationlistener updates when Activity is paused */
+    /**
+     * Remove the locationlistener updates when Activity is paused
+     */
     @Override
     protected void onPause() {
         super.onPause();
         locationManager.removeUpdates(this);
     }
 
+    /**
+     * Keep track from the user's location and check if he gets close to any current task.
+     * If he gets, it will show the task if the task has not been shown yet.
+     * In order to show, make a Toast and a Notification.
+     * @param location
+     */
     @Override
     public void onLocationChanged(Location location) {
         this.userLat = location.getLatitude();
@@ -193,6 +225,11 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
         }
     }
 
+    /**
+     * Initialize the Action Bar at the top of the app.
+     * @param menu
+     * @return if it was successful
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu items for use in the action bar
@@ -205,6 +242,11 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
         return super.onCreateOptionsMenu(menu);
     }
 
+    /**
+     * Handles each action from the Action Bar.
+     * @param item
+     * @return if it was successful
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
@@ -230,7 +272,6 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
-        // TODO Auto-generated method stub
 
     }
 
@@ -261,6 +302,8 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
      * have been completely destroyed during this process (it is likely that it would only be
      * stopped or paused), {@link #onCreate(Bundle)} may not be called again so we should call this
      * method in {@link #onResume()} to guarantee that it will be called.
+     * @param lat
+     * @param lng
      */
     private void setUpMapIfNeeded(double lat, double lng) {
         // Do a null check to confirm that we have not already instantiated the map.
@@ -308,6 +351,11 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
 
     }
 
+    /**
+     * After the user is done dragging the marker, it sets to the corresponding task the new position.
+     * It also set it as not showed.
+     * @param marker
+     */
     @Override
     public void onMarkerDragEnd(Marker marker) {
         for (Task t : taskArray) {
@@ -322,16 +370,11 @@ public class MapsActivity extends FragmentActivity implements LocationListener, 
         }
     }
 
-    // Getters
+    /**
+     * Getter
+     * @return ArrayList of all current tasks
+     */
     public ArrayList<Task> getTasks() {
-        return taskArray;
-    }
-
-    public double getUserLat() {
-        return userLat;
-    }
-
-    public double getUserLng() {
-        return userLng;
+        return this.taskArray;
     }
 }

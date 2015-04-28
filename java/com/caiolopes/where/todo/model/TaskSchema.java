@@ -1,9 +1,11 @@
-package com.caio_nathan.where.todo.model;
+package com.caiolopes.where.todo.model;
 
 import android.provider.BaseColumns;
 
 /**
- * Created by caiolopes on 4/26/15.
+ * Schema for the task database.
+ * @author Caio Lopes
+ * @version 1.0
  */
 public final class TaskSchema {
     // To prevent someone from accidentally instantiating the contract class,

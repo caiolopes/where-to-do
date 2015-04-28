@@ -1,4 +1,4 @@
-package com.caio_nathan.where.todo.model;
+package com.caiolopes.where.todo.model;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -9,7 +9,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 
 /**
- * Created by caiolopes on 4/26/15.
+ * Helper class to handle all interaction with the database.
+ * @author Caio Lopes
+ * @version 1.0
  */
 public class TasksDbHelper extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
@@ -61,6 +63,10 @@ public class TasksDbHelper extends SQLiteOpenHelper {
         return newRowId;
     }
 
+    /**
+     *
+     * @return ArrayList of all tasks stored in the database.
+     */
     public ArrayList<Task> getTasks() {
         ArrayList<Task> taskArray = new ArrayList<>();
         Cursor cursor;
@@ -90,6 +96,11 @@ public class TasksDbHelper extends SQLiteOpenHelper {
         return taskArray;
     }
 
+    /**
+     * Update a specific task in the database.
+     * @param task
+     * @return amount of affected rows
+     */
     public int updateTask(Task task) {
         // New value for one column
         ContentValues values = new ContentValues();
@@ -111,6 +122,11 @@ public class TasksDbHelper extends SQLiteOpenHelper {
                 selectionArgs);
     }
 
+    /**
+     * Remove a specific task in the database.
+     * @param task
+     * @return affected rows.
+     */
     public int removeTask(Task task) {
         // Define 'where' part of query.
         String selection = TaskSchema.FeedEntry._ID + " = ?";

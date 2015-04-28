@@ -1,4 +1,4 @@
-package com.caio_nathan.where.todo;
+package com.caiolopes.where.todo;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,14 +11,16 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.caio_nathan.where.todo.model.Task;
-import com.caio_nathan.where.todo.model.TasksDbHelper;
+import com.caiolopes.where.todo.model.Task;
+import com.caiolopes.where.todo.model.TasksDbHelper;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
- * Created by caiolopes on 4/23/15.
+ * This class shows the ListView with all the current tasks.
+ * @author Caio Lopes
+ * @version 1.0
  */
 public class ListActivity extends FragmentActivity {
     final String TAG = this.getClass().getSimpleName();
@@ -83,6 +85,12 @@ public class ListActivity extends FragmentActivity {
         });
     }
 
+    /**
+     * It handles the result from the user if he makes an edition or removal.
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1) {
